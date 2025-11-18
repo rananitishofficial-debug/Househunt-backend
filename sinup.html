@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Maps API (replace YOUR_API_KEY with your actual key) -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
+  <style>
+    /* Custom animations */
+    .fade-in {
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .bounce-in {
+      animation: bounceIn 0.8s ease-out;
+    }
+    @keyframes bounceIn {
+      0% { transform: scale(0.3); opacity: 0; }
+      50% { transform: scale(1.05); }
+      70% { transform: scale(0.9); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    /* Video background styling */
+    .video-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      object-fit: cover;
+    }
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.3); /* Semi-transparent overlay for better text readability */
+      z-index: 0;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 relative">
+  <!-- Animated Video Background -->
+  <video class="video-bg" autoplay muted loop>
+    <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4">
+    <!-- Fallback for browsers that don't support video -->
+    Your browser does not support the video tag.
+  </video>
+  <div class="overlay"></div>
+
+  <div class="max-w-4xl w-full bg-white bg-opacity-90 rounded-lg shadow-2xl overflow-hidden fade-in relative z-10">
+    <div class="md:flex">
+      <!-- Login Form Section -->
+      <div class="md:w-1/2 p-8">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center bounce-in">Login</h2>
+        <form id="loginForm" class="space-y-4">
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+            <input type="email" id="email" placeholder="Enter your email" required 
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+          </div>
+          <div>
+            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+            <input type="password" id="password" placeholder="Enter your password" required 
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+          </div>
+          <div class="flex items-center">
+            <input type="checkbox" id="remember" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+            <label for="remember" class="ml-2 block text-sm text-gray-900">Remember me</label>
+          </div>
+          <button type="submit" 
+                  class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300 transform hover:scale-105">
+            Login
+          </button>
+        </form>
+        <p class="mt-4 text-center text-sm text-gray-600">
+          Don't have an account? <a href="#" class="text-blue-600 hover:text-blue-500">Sign up</a>
+        </p>
+      </div>
+      <!-- Google Map Section -->
+      <div class="md:w-1/2">
+        <div id="map" class="h-64 md:h-full"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Google Map
+    function initMap() {
+      try {
+        const location = { lat: 37.7749, lng: -122.4194 }; // Example: San Francisco
+        const map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 12,
+          center: location,
+        });
+        const marker = new google.maps.Marker({
+          position: location,
+          map: map,
+        });
+      } catch (error) {
+        console.error("Error initializing map:", error);
+        document.getElementById("map").innerHTML = "<p class='p-4 text-center text-gray-500'>Map failed to load. Please check your API key and internet connection.</p>";
+      }
+    }
+
+    // Fallback if Google Maps fails to load
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
+          document.getElementById("map").innerHTML = "<p class='p-4 text-center text-gray-500'>Map failed to load. Please check your API key and internet connection.</p>";
+        }
+      }, 5000); // Wait 5 seconds for the API to load
+    });
+
+    // Login form submission
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      // Basic client-side validation
+      if (!email || !password) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      try {
+        const res = await fetch("http://localhost:5000/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+        alert(data.message);
+
+        // Add success animation
+        if (res.ok) {
+          document.querySelector('button[type="submit"]').classList.add('bg-green-600', 'hover:bg-green-700');
+        }
+      } catch (error) {
+        alert("An error occurred. Please try again.");
+      }
+    });
+  </script>
+</body>
+</html>

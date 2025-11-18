@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Find House</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <video autoplay muted loop id="bgVideo" 
+style="position:fixed; right:0; bottom:0; min-width:100%; min-height:100%; z-index:-1;">
+    <source src="https://videos.pexels.com/video-files/3103639/3103639-hd_1280_720_25fps.mp4" type="video/mp4">
+</video>
+
+
+  <style>
+    body {
+        margin: 0;
+        padding: 0;
+        background-image: url("https://images.unsplash.com/photo-1504893524553-b855bce32c67?q=80&w=2070");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        font-family: Arial, sans-serif;
+    }
+
+    .overlay {
+        background: rgba(255,255,255,0.85);
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 900px;
+        margin: 100px auto;
+        box-shadow: 0px 4px 25px rgba(0,0,0,0.2);
+    }
+
+    #searchResults {
+        margin-top: 40px;
+    }
+
+    .inp {
+        flex:1;
+        padding:12px 15px;
+        border:1px solid #ccc;
+        border-radius:8px;
+        font-size:16px;
+    }
+</style>
+
+</head>
+
+<body class="bg-gray-900">
+
+  <!-- Background Video -->
+  <video autoplay muted loop class="bg-video">
+    <source src="https://cdn.pixabay.com/vimeo/357253222/home-2253.mp4?width=1280" type="video/mp4" />
+  </video>
+
+  <div class="p-6 max-w-6xl mx-auto">
+    <h1 class="text-4xl font-bold text-white mb-4 text-center">
+      Find Your Dream House
+    </h1>
+
+    <div id="propertyList" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
